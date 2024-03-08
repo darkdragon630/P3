@@ -167,12 +167,18 @@ function replyToComment(event) {
     var author = parentComment.querySelector(".comment-author").textContent;
     var replyContent = prompt("Reply to " + author + ":");
     if (replyContent) {
+        var replyContainer = document.createElement("div");
+        replyContainer.classList.add("comment-reply-container");
+
         var newComment = createComment("You", new Date().toLocaleDateString(), replyContent);
         newComment.classList.add("comment-reply");
-        parentComment.appendChild(newComment);
+
+        replyContainer.appendChild(newComment);
+        parentComment.appendChild(replyContainer);
         saveComments();
     }
 }
+
 
 function likeComment(event) {
     var likeCountSpan = event.target.parentElement.querySelector(".like-count");
