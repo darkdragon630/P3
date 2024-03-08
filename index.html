@@ -161,8 +161,9 @@ function replyToComment(event) {
     var author = parentComment.querySelector(".comment-author").textContent;
     var replyContent = prompt("Reply to " + author + ":");
     if (replyContent) {
-        var replyComment = createComment("You", new Date().toLocaleDateString(), replyContent);
-        parentComment.appendChild(replyComment);
+        var newComment = createComment("You", new Date().toLocaleDateString(), replyContent);
+        parentComment.appendChild(newComment);
+        saveComments(); // Simpan komentar setelah membalas
     }
 }
 
