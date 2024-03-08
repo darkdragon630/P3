@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id-ID">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,7 @@ body {
 .comment {
     border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 20px; /* Menambah jarak antara komentar */
+    margin-bottom: 20px;
     background-color: #f9f9f9;
 }
 
@@ -38,68 +38,42 @@ body {
     margin-bottom: 10px;
 }
 
-.comment .comment-actions button {
-    margin-right: 5px;
+.comment-actions {
+    margin-top: 10px;
+}
+
+.comment-actions button {
     background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 3px;
     padding: 5px 10px;
     cursor: pointer;
+    margin-right: 10px;
 }
 
-.comment .comment-actions button:hover {
+.comment-actions button:hover {
     background-color: #0056b3;
 }
 
-.comment .delete-btn {
-    background-color: #dc3545;
+.reply-btn {
+    background-color: #28a745;
 }
 
-.comment .delete-btn:hover {
-    background-color: #bd2130;
+.reply-btn:hover {
+    background-color: #218838;
 }
 
-.comment-reply {
-    margin-left: 20px; /* Menambah indentasi untuk balasan */
-    margin-top: 10px; /* Menambah jarak antara komentar yang direply dengan hasil reply-nya */
+.like-count {
+    margin-left: 5px;
 }
 
-#comment-form {
-    margin-top: 20px;
-    margin-bottom: 20px; /* Menambah jarak di bawah formulir */
-}
-
-#comment-form h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-#comment-form input[type="text"],
-#comment-form textarea {
+textarea {
     width: calc(100% - 22px);
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-#comment-form textarea {
-    resize: vertical;
-}
-
-#comment-form button {
-    width: 100%;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    padding: 10px;
-    cursor: pointer;
-}
-
-#comment-form button:hover {
-    background-color: #0056b3;
 }
 </style>
 </head>
@@ -118,108 +92,6 @@ body {
 </div>
 
 <script>
-function createComment(author, date, content, parentId) {
-    var commentDiv = document.createElement("div");
-    commentDiv.classList.add("comment");
-    commentDiv.dataset.commentId = parentId || '';
-
-    var headerDiv = document.createElement("div");
-    headerDiv.classList.add("comment-header");
-    headerDiv.innerHTML = "<span class='comment-author'>" + author + "</span> <span class='comment-date'>" + date + "</span>";
-
-    var bodyDiv = document.createElement("div");
-    bodyDiv.classList.add("comment-body");
-    bodyDiv.textContent = content;
-
-    var actionsDiv = document.createElement("div");
-    actionsDiv.classList.add("comment-actions");
-
-    var replyBtn = document.createElement("button");
-    replyBtn.classList.add("reply-btn");
-    replyBtn.textContent = "Reply";
-
-    var likeBtn = document.createElement("button");
-    likeBtn.classList.add("like-btn");
-    likeBtn.textContent = "Like";
-
-    var deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("delete-btn");
-    deleteBtn.textContent = "Hapus";
-
-    var likeCountSpan = document.createElement("span");
-    likeCountSpan.classList.add("like-count");
-    likeCountSpan.textContent = "0";
-
-    actionsDiv.appendChild(replyBtn);
-    actionsDiv.appendChild(likeBtn);
-    actionsDiv.appendChild(deleteBtn);
-    actionsDiv.appendChild(likeCountSpan);
-
-    commentDiv.appendChild(headerDiv);
-    commentDiv.appendChild(bodyDiv);
-    commentDiv.appendChild(actionsDiv);
-
-    return commentDiv;
-}
-
-function replyToComment(event) {
-    var parentComment = event.target.closest(".comment");
-    var author = parentComment.querySelector(".comment-author").textContent;
-    var replyContent = prompt("Reply to " + author + ":");
-    if (replyContent) {
-        var replyContainer = document.createElement("div");
-        replyContainer.classList.add("comment-reply-container");
-
-        var newComment = createComment("You", new Date().toLocaleDateString(), replyContent);
-        newComment.classList.add("comment-reply");
-
-        replyContainer.appendChild(newComment);
-        parentComment.appendChild(replyContainer);
-        saveComments();
-    }
-}
-
-
-function likeComment(event) {
-    var likeCountSpan = event.target.parentElement.querySelector(".like-count");
-    var likeCount = parseInt(likeCountSpan.textContent);
-    likeCount++;
-    likeCountSpan.textContent = likeCount;
-    saveComments();
-}
-
-function deleteComment(event) {
-    var comment = event.target.closest(".comment");
-    comment.remove();
-    saveComments();
-}
-
-function saveComments() {
-    var comments = document.querySelectorAll('.comment');
-    var commentsArray = [];
-    comments.forEach(function(comment) {
-        var commentData = {
-            parentId: comment.dataset.commentId,
-            author: comment.querySelector('.comment-author').textContent,
-            date: comment.querySelector('.comment-date').textContent,
-            content: comment.querySelector('.comment-body').textContent
-        };
-        commentsArray.push(commentData);
-    });
-    localStorage.setItem('comments', JSON.stringify(commentsArray));
-}
-
-function loadComments() {
-    var comments = localStorage.getItem('comments');
-    if (comments) {
-        var commentsArray = JSON.parse(comments);
-        commentsArray.forEach(function(commentData) {
-            var newComment = createComment(commentData.author, commentData.date, commentData.content, commentData.parentId);
-            document.getElementById('comments-container').appendChild(newComment);
-        });
-    }
-}
-
 document.addEventListener("DOMContentLoaded", function() {
     loadComments();
 
@@ -229,9 +101,14 @@ document.addEventListener("DOMContentLoaded", function() {
         var author = authorInput.value;
         var content = contentInput.value;
         if (author && content) {
-            var newComment = createComment(author, new Date().toLocaleDateString(), content);
-            document.getElementById('comments-container').appendChild(newComment);
-            saveComments();
+            var newComment = {
+                author: author,
+                date: new Date().toLocaleDateString(),
+                content: content,
+                replies: []
+            };
+            saveComment(newComment);
+            displayComment(newComment);
             authorInput.value = "";
             contentInput.value = "";
         } else {
@@ -239,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    document.getElementById('comments-container').addEventListener("click", function(event) {
+    document.getElementById("comments-container").addEventListener("click", function(event) {
         if (event.target.classList.contains("reply-btn")) {
             replyToComment(event);
         } else if (event.target.classList.contains("like-btn")) {
@@ -248,16 +125,80 @@ document.addEventListener("DOMContentLoaded", function() {
             deleteComment(event);
         }
     });
-
-    document.getElementById('comments-container').addEventListener("click", function(event) {
-        if (event.target.classList.contains("reply-btn")) {
-            replyToComment(event);
-        }
-    });
-
 });
+
+function saveComment(comment) {
+    var existingComments = JSON.parse(localStorage.getItem('comments')) || [];
+    existingComments.push(comment);
+    localStorage.setItem('comments', JSON.stringify(existingComments));
+}
+
+function loadComments() {
+    var existingComments = JSON.parse(localStorage.getItem('comments')) || [];
+    existingComments.forEach(function(comment) {
+        displayComment(comment);
+    });
+}
+
+function displayComment(comment) {
+    var commentDiv = document.createElement("div");
+    commentDiv.classList.add("comment");
+    commentDiv.innerHTML = `
+        <div class="comment-header">
+            <span class="comment-author">${comment.author}</span>
+            <span class="comment-date">${comment.date}</span>
+            <button class="delete-btn">Hapus</button>
+        </div>
+        <div class="comment-body">${comment.content}</div>
+        <div class="comment-actions">
+            <button class="reply-btn" data-comment="${comment.content}">Reply</button>
+            <button class="like-btn">Like</button>
+            <span class="like-count">0</span>
+        </div>
+    `;
+    document.getElementById("comments-container").appendChild(commentDiv);
+}
+
+function replyToComment(event) {
+    var parentCommentContent = event.target.getAttribute("data-comment");
+    var replyContent = prompt("Reply to " + parentCommentContent + ":");
+    if (replyContent) {
+        var parentCommentDiv = event.target.closest(".comment");
+        var replyDiv = document.createElement("div");
+        replyDiv.classList.add("comment");
+        replyDiv.innerHTML = `
+            <div class="comment-body">${replyContent}</div>
+        `;
+        parentCommentDiv.appendChild(replyDiv);
+
+        var existingComments = JSON.parse(localStorage.getItem('comments')) || [];
+        var parentCommentIndex = existingComments.findIndex(comment => comment.content === parentCommentContent);
+        if (parentCommentIndex !== -1) {
+            existingComments[parentCommentIndex].replies.push(replyContent);
+            localStorage.setItem('comments', JSON.stringify(existingComments));
+        }
+    }
+}
+
+function likeComment(event) {
+    var likeCountSpan = event.target.parentElement.querySelector(".like-count");
+    var likeCount = parseInt(likeCountSpan.textContent);
+    likeCount++;
+    likeCountSpan.textContent = likeCount;
+}
+
+function deleteComment(event) {
+    var commentDiv = event.target.closest(".comment");
+    var commentContent = commentDiv.querySelector(".comment-body").textContent;
+    var existingComments = JSON.parse(localStorage.getItem('comments')) || [];
+    var commentIndex = existingComments.findIndex(comment => comment.content === commentContent);
+    if (commentIndex !== -1) {
+        existingComments.splice(commentIndex, 1);
+        localStorage.setItem('comments', JSON.stringify(existingComments));
+        commentDiv.remove();
+    }
+}
 </script>
 
 </body>
 </html>
-
