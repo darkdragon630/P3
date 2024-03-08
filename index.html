@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id-ID">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -221,4 +221,31 @@ document.addEventListener("DOMContentLoaded", function() {
         var authorInput = document.getElementById("author");
         var contentInput = document.getElementById("content");
         var author = authorInput.value;
-        var content = contentInput.value
+        var content = contentInput.value;
+        if (author && content) {
+            var newComment = createComment(author, new Date().toLocaleDateString(), content);
+            document.getElementById('comments-container').appendChild(newComment);
+            saveComments();
+            authorInput.value = "";
+            contentInput.value = "";
+        } else {
+            alert("Nama dan isi komentar harus diisi!");
+        }
+    });
+
+    // Tambahkan event listener untuk tombol reply, like, dan delete
+    document.getElementById('comments-container').addEventListener("click", function(event) {
+        if (event.target.classList.contains("reply-btn")) {
+            replyToComment(event);
+        } else if (event.target.classList.contains("like-btn")) {
+            likeComment(event);
+        } else if (event.target.classList.contains("delete-btn")) {
+            deleteComment(event);
+        }
+    });
+});
+</script>
+
+</body>
+</html>
+
