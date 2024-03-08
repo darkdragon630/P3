@@ -60,6 +60,10 @@ body {
     background-color: #bd2130;
 }
 
+.comment-reply {
+    margin-left: 20px; /* Menambah indentasi untuk balasan */
+}
+
 #comment-form {
     margin-top: 20px;
     margin-bottom: 20px; /* Menambah jarak di bawah formulir */
@@ -113,9 +117,10 @@ body {
 </div>
 
 <script>
-function createComment(author, date, content) {
+function createComment(author, date, content, parentId) {
     var commentDiv = document.createElement("div");
     commentDiv.classList.add("comment");
+    commentDiv.dataset.commentId = parentId || ''; // Menyimpan ID komentar induk
 
     var headerDiv = document.createElement("div");
     headerDiv.classList.add("comment-header");
@@ -161,7 +166,9 @@ function replyToComment(event) {
     var author = parentComment.querySelector(".comment-author").textContent;
     var replyContent = prompt("Reply to " + author + ":");
     if (replyContent) {
-        var newComment = createComment("You", new Date().toLocaleDateString(), replyContent);
+        var parentId = parentComment.dataset.commentId; // Mendapatkan ID komentar induk
+        var newComment = createComment("You", new Date().toLocaleDateString(), replyContent, parentId);
+        newComment.classList.add("comment-reply"); // Menambah kelas untuk membedakan balasan
         parentComment.appendChild(newComment);
         saveComments(); // Simpan komentar setelah membalas
     }
@@ -185,6 +192,7 @@ function saveComments() {
     var commentsArray = [];
     comments.forEach(function(comment) {
         var commentData = {
+            parentId: comment.dataset.commentId, // Menyimpan ID komentar induk
             author: comment.querySelector('.comment-author').textContent,
             date: comment.querySelector('.comment-date').textContent,
             content: comment.querySelector('.comment-body').textContent
@@ -199,7 +207,7 @@ function loadComments() {
     if (comments) {
         var commentsArray = JSON.parse(comments);
         commentsArray.forEach(function(commentData) {
-            var newComment = createComment(commentData.author, commentData.date, commentData.content);
+            var newComment = createComment(commentData.author, commentData.date, commentData.content, commentData.parentId);
             document.getElementById('comments-container').appendChild(newComment);
         });
     }
@@ -213,30 +221,4 @@ document.addEventListener("DOMContentLoaded", function() {
         var authorInput = document.getElementById("author");
         var contentInput = document.getElementById("content");
         var author = authorInput.value;
-        var content = contentInput.value;
-        if (author && content) {
-            var newComment = createComment(author, new Date().toLocaleDateString(), content);
-            document.getElementById('comments-container').appendChild(newComment);
-            saveComments();
-            authorInput.value = "";
-            contentInput.value = "";
-        } else {
-            alert("Nama dan isi komentar harus diisi!");
-        }
-    });
-
-    // Tambahkan event listener untuk tombol reply, like, dan delete
-    document.getElementById('comments-container').addEventListener("click", function(event) {
-        if (event.target.classList.contains("reply-btn")) {
-            replyToComment(event);
-        } else if (event.target.classList.contains("like-btn")) {
-            likeComment(event);
-        } else if (event.target.classList.contains
-("delete-btn")) {
-            deleteComment(event);
-        }
-    });
-});
-</script>
-
-</body
+        var content = contentInput.value
