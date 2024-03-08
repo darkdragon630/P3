@@ -25,7 +25,7 @@ body {
 .comment {
     border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px; /* Menambah jarak antara komentar */
     background-color: #f9f9f9;
 }
 
@@ -62,6 +62,7 @@ body {
 
 #comment-form {
     margin-top: 20px;
+    margin-bottom: 20px; /* Menambah jarak di bawah formulir */
 }
 
 #comment-form h2 {
@@ -229,7 +230,8 @@ document.addEventListener("DOMContentLoaded", function() {
             replyToComment(event);
         } else if (event.target.classList.contains("like-btn")) {
             likeComment(event);
-        } else if (event.target.classList.contains("delete-btn")) {
+        } else if (event.target.classList.contains
+("delete-btn")) {
             deleteComment(event);
         }
     });
