@@ -62,6 +62,7 @@ body {
 
 .comment-reply {
     margin-left: 20px; /* Menambah indentasi untuk balasan */
+    margin-top: 10px; /* Menambah jarak antara komentar yang direply dengan hasil reply-nya */
 }
 
 #comment-form {
@@ -235,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('comments-container').addEventListener("click", function(event) {
         if (event.target.classList.contains("reply-btn")) {
             replyToComment(event);
-        } else  if (event.target.classList.contains("like-btn")) {
+        } else if (event.target.classList.contains("like-btn")) {
             likeComment(event);
         } else if (event.target.classList.contains("delete-btn")) {
             deleteComment(event);
