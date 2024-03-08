@@ -147,13 +147,13 @@ function displayComment(comment) {
         <div class="comment-header">
             <span class="comment-author">${comment.author}</span>
             <span class="comment-date">${comment.date}</span>
-            <button class="delete-btn">Hapus</button>
         </div>
         <div class="comment-body">${comment.content}</div>
         <div class="comment-actions">
             <button class="reply-btn" data-comment="${comment.content}">Reply</button>
             <button class="like-btn">Like</button>
             <span class="like-count">0</span>
+            <button class="delete-btn">Hapus</button>
         </div>
     `;
     document.getElementById("comments-container").appendChild(commentDiv);
@@ -171,12 +171,10 @@ function replyToComment(event) {
         `;
         parentCommentDiv.appendChild(replyDiv);
 
+        var commentIndex = Array.from(parentCommentDiv.parentElement.children).indexOf(parentCommentDiv);
         var existingComments = JSON.parse(localStorage.getItem('comments')) || [];
-        var parentCommentIndex = existingComments.findIndex(comment => comment.content === parentCommentContent);
-        if (parentCommentIndex !== -1) {
-            existingComments[parentCommentIndex].replies.push(replyContent);
-            localStorage.setItem('comments', JSON.stringify(existingComments));
-        }
+        existingComments[commentIndex].replies.push(replyContent);
+        localStorage.setItem('comments', JSON.stringify(existingComments));
     }
 }
 
@@ -189,14 +187,11 @@ function likeComment(event) {
 
 function deleteComment(event) {
     var commentDiv = event.target.closest(".comment");
-    var commentContent = commentDiv.querySelector(".comment-body").textContent;
+    var commentIndex = Array.from(commentDiv.parentElement.children).indexOf(commentDiv);
     var existingComments = JSON.parse(localStorage.getItem('comments')) || [];
-    var commentIndex = existingComments.findIndex(comment => comment.content === commentContent);
-    if (commentIndex !== -1) {
-        existingComments.splice(commentIndex, 1);
-        localStorage.setItem('comments', JSON.stringify(existingComments));
-        commentDiv.remove();
-    }
+    existingComments.splice(commentIndex, 1);
+    localStorage.setItem('comments', JSON.stringify(existingComments));
+    commentDiv.remove();
 }
 </script>
 
